@@ -17,30 +17,35 @@ matrizRandom = [
 ]
 
 def manhattan():
-    numeroObservado = 1
+    totalDiferenca = 0  
 
-    for posicao1 in range(len(matrizRandom)):
-        for posicao2 in range(len(matrizRandom[posicao1])):
-            if numeroObservado == matrizObjetivo[posicao1][posicao2]: 
-                posicaoX1 = posicao1
-                posicaoY1 = posicao2  
-                
-                for posicaoA in range(len(matrizObjetivo)):
-                    for posicaoB in range(len(matrizObjetivo[posicaoA])):
-                        if numeroObservado == matrizObjetivo[posicaoA][posicaoB]:  
-                            posicaoX2 = posicaoA
-                            posicaoY2 = posicaoB 
+    for numeroObservado in range(1, 10): #começo das considerações
+    
+        posicaoX1, posicaoY1 = None, None 
+        posicaoX2, posicaoY2 = None, None
+        
+        for posicao1 in range(len(matrizRandom)): 
+            for posicao2 in range(len(matrizRandom[posicao1])):
+                if matrizRandom[posicao1][posicao2] == numeroObservado:
+                    posicaoX1, posicaoY1 = posicao1, posicao2
 
-                diferencaX = abs(posicaoX1 - posicaoX2)
-                diferencaY = abs(posicaoY1 - posicaoY2)
+                if matrizObjetivo[posicao1][posicao2] == numeroObservado:
+                    posicaoX2, posicaoY2 = posicao1, posicao2
 
-                diferencaDeEstados = diferencaX + diferencaY
-                print(f"Estado == {numeroObservado}")
-                print(f"Diferença: {diferencaDeEstados}")
+        
+        diferencaX = abs(posicaoX1 - posicaoX2)
+        diferencaY = abs(posicaoY1 - posicaoY2)
+        diferencaDeEstados = diferencaX + diferencaY
 
-                numeroObservado += 1  
+        totalDiferenca += diferencaDeEstados  
 
-    return diferencaDeEstados if 'diferencaDeEstados' in locals() else 0 
+        print(f"Estado == {numeroObservado}")
+        print(f"Diferença: {diferencaDeEstados}")
+
+    print(f"Distância Manhattan Total: {totalDiferenca}")
+    return totalDiferenca
+
+#manhattan()
 #def avaliacao(custoAteAqui, custoAteFinal = manhattan()):
  #   custoTotal = custoAteAqui + custoAteFinal
 

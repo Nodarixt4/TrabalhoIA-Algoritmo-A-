@@ -26,26 +26,21 @@ def posicaoIncialDeAcordoComAposicaoDo9():
                 if matrizRandom[a][b] == 9:
                     x = a
                     y = b
-                    VariavelDeIniciarObagulho = 1
     return x,y
 
 x,y = posicaoIncialDeAcordoComAposicaoDo9()
 
 
 
+"""
+def gerarMovimento():
+    movimentosPossiveis = []
+    movimentosPossiveis.extend(movimentosValidos(x,y, matrizRandom))
 
-def gerarMoviment():
-
-    if VariavelDeIniciarObagulho ==1:
-        movimentosValidos()
-    else:
-        posicaoIncialDeAcordoComAposicaoDo9()
+    print("Movimentos", movimentosPossiveis)
 
     return
-
-
-
-
+"""
 
 def movimentosValidos(x, y, matrizRandom):
     movimentos = []
@@ -71,9 +66,8 @@ def movimentosValidos(x, y, matrizRandom):
     
     return movimentos
 
-
-print("Movimentos Possiveis: ")
-movimentosValidos(x, y, matrizRandom)
+#print("Movimentos Possiveis: ")
+#movimentosValidos(x, y, matrizRandom)
 
 
 
@@ -122,6 +116,9 @@ def manhattan():
 #manhattan()
 
 #def avaliacao(custoAteAqui = custoAteAqui(), custoAteFinal = manhattan()):
-#    custoTotal = custoAteAqui + custoAteFinal
-
+    custoTotal = custoAteAqui + custoAteFinal
     
+    return custoTotal
+    
+
+#gerarMovimento()

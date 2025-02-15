@@ -5,6 +5,8 @@ from queue import PriorityQueue
 
 ########################################################################################
 
+VariavelDeIniciarObagulho = 0
+
 matrizObjetivo = [
     [1, 2, 3],
     [4, 5, 6],
@@ -15,6 +17,78 @@ matrizRandom = [
     [7, 6, 2],
     [9, 8, 4]
 ]
+
+
+def posicaoIncialDeAcordoComAposicaoDo9():
+
+    for a in range(len(matrizRandom)): 
+            for b in range(len(matrizRandom[a])):
+                if matrizRandom[a][b] == 9:
+                    x = a
+                    y = b
+                    VariavelDeIniciarObagulho = 1
+    return x,y
+
+x,y = posicaoIncialDeAcordoComAposicaoDo9()
+
+
+
+
+def gerarMoviment():
+
+    if VariavelDeIniciarObagulho ==1:
+        movimentosValidos()
+    else:
+        posicaoIncialDeAcordoComAposicaoDo9()
+
+    return
+
+
+
+
+
+def movimentosValidos(x, y, matrizRandom):
+    movimentos = []
+    
+    if x < 0 or x >= len(matrizRandom) or y < 0 or y >= len(matrizRandom[0]):
+        return movimentos
+    
+    if x > 0:
+        movimentos.append((x - 1, y))
+        print("cima")
+    
+    if x < len(matrizRandom) - 1:
+        movimentos.append((x + 1, y))  
+        print("baixo")
+    
+    if y > 0:
+        movimentos.append((x, y - 1)) 
+        print("esquerda")
+    
+    if y < len(matrizRandom[0]) - 1:
+        movimentos.append((x, y + 1))  
+        print("direita")
+    
+    return movimentos
+
+
+print("Movimentos Possiveis: ")
+movimentosValidos(x, y, matrizRandom)
+
+
+
+
+
+
+
+
+
+
+
+def custoAteAqui():
+    movimentos = 0
+    movimentos += 1
+    return movimentos
 
 def manhattan():
     totalDiferenca = 0  
@@ -39,14 +113,15 @@ def manhattan():
 
         totalDiferenca += diferencaDeEstados  
 
-        print(f"Estado == {numeroObservado}")
-        print(f"Diferença: {diferencaDeEstados}")
+        #print(f"Estado == {numeroObservado}")
+        #print(f"Diferença: {diferencaDeEstados}")
 
-    print(f"Distância Manhattan Total: {totalDiferenca}")
+    #print(f"Distância Manhattan Total: {totalDiferenca}")
     return totalDiferenca
 
 #manhattan()
-#def avaliacao(custoAteAqui, custoAteFinal = manhattan()):
- #   custoTotal = custoAteAqui + custoAteFinal
+
+#def avaliacao(custoAteAqui = custoAteAqui(), custoAteFinal = manhattan()):
+#    custoTotal = custoAteAqui + custoAteFinal
 
     

@@ -24,6 +24,6 @@ matrizRandom = [
     [9, 8, 4]
 ]
 
-matriaAtual = gMov.gerarMovimento()
+matrizAtual = gMov.gerarMovimento()
  
-gMov.gerarMovimento(contador, matrizRandom, matrizObjetivo)
+gMov.gerarMovimento(contador, matrizRandom, matrizObjetivo, matrizAtual)

@@ -1,9 +1,9 @@
 import manhattan as mh
 import movimentosValidos as movValidos
 
-def gerarMovimento(contador, matrizRandom, matrizObjetivo):
+def gerarMovimento(contador, matrizRandom, matrizObjetivo, matrizAtual):
     
-    movValidos.movimentosValidos()
+    movValidos.movimentosValidos(matrizAtual)
 
     for a in range(1,4):
         matrizTeste = []

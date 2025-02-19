@@ -18,12 +18,19 @@ matrizObjetivo = [
     [4, 5, 6],
     [7, 8, 9]
 ]
-matrizRandom = [
+matrizAtual = [
     [3, 5, 1],
     [7, 6, 2],
     [9, 8, 4]
 ]
 
-matrizAtual = gMov.gerarMovimento()
- 
-gMov.gerarMovimento(contador, matrizRandom, matrizObjetivo, matrizAtual)
+memoriaMatrizes = []
+memoriaMatrizes.extend(matrizAtual)
+
+
+gMov.gerarMovimento(memoriaMatrizes,matrizObjetivo)
+
+
+#for item in memoriaMatrizes:
+#    print(memoriaMatrizes)
+

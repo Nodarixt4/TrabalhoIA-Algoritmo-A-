@@ -1,7 +1,7 @@
-import manhattan as mh
-import movimentosValidos as movValidos
-import posicaoDeAcordoComAposicao9 as pos 
-import troca as tr
+import Tentativa1.manhattan as mh
+import Tentativa1.movimentosValidos as movValidos
+import Tentativa1.posicaoDeAcordoComAposicao9 as pos 
+import Tentativa1.troca as tr
 
 def gerarMovimento(memoriaMatrizes, matrizObjetivo):
     i = 0

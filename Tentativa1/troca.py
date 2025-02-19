@@ -1,4 +1,4 @@
-import posicaoDeAcordoComAposicao9 as pos
+import Tentativa1.posicaoDeAcordoComAposicao9 as pos
 
 def troca(movimento,matriz):
     

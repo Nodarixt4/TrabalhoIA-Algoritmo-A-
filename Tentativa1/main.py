@@ -5,9 +5,9 @@ from queue import PriorityQueue
 
 ########################################################################################
 
-import movimentosValidos as movValidos
-import manhattan as mh
-import gerarMovimento as gMov
+import Tentativa1.movimentosValidos as movValidos
+import Tentativa1.manhattan as mh
+import Tentativa1.gerarMovimento as gMov
 
 ########################################################################################
 

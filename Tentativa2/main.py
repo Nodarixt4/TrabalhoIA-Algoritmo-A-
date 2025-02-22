@@ -1,59 +1,25 @@
 import numpy as np
-##########################################################################
 import funcoes as fun
+
 ##########################################################################
+seletor = int(input("-1 Matriz inicial aleatória\n-2 Pré determinada \n-3 Escrever matriz \nResposta: "))
 
-matrizObjetivo = fun.gerarMatrizObjetivo()
-matrizAtual = fun.gerarMatrizDesorganizada()
+matrizDeterminada = np.zeros((3, 3), dtype=int)
 
+if seletor == 3:
+    for linha in range(matrizDeterminada.shape[0]):  
+        for coluna in range(matrizDeterminada.shape[1]):  
+            matrizDeterminada[linha, coluna] = int(input(f"Posição[{linha+1}][{coluna+1}]: "))
 
+matrizInicial = fun.gerarMatrizDesorganizada(seletor, matrizDeterminada)
+print("Matriz inicial:")
+print(matrizInicial)
 
-
-
-
-
-
-
-
-
-
-
-################## CAMPO DE TESTE #########################################
-
-for linha in matrizAtual:
-    print(linha)
-print("\n")
-for linha in matrizObjetivo:
-    print(linha)
-
-
-"""
-manhattanTeste = fun.manhattan(matrizAtual,matrizObjetivo)
-print(manhattanTeste)
-"""
-
-"""
-x,y = fun.encontrarCoordenada((matrizAtual),0)
-testeMovimentosPossiveis = fun.movimentosValidos(x,y,matrizAtual)
-print(testeMovimentosPossiveis)
-"""
-
-"""
-x,y = fun.encontrarCoordenada((matrizAtual),0)
-movimentos = fun.movimentosValidos(x,y,matrizAtual)
-for a,b in movimentos:
-    memoriaMatrizes.append(fun.moverZero(matrizAtual,x,y,a,b))
-#for matriz in memoriaMatrizes:
-#    print(np.array_str(matriz)) 
-"""
-
-"""
-testeBuscaMelhor = fun.buscarMelhorMovimento(matrizAtual,matrizObjetivo,0)
-print(testeBuscaMelhor)
-"""
-
-"""
-for i in range(1,20):
-    matrizAtual = fun.irParaOmelhor(matrizAtual,matrizObjetivo)
-    print(matrizAtual)
-"""
+solucao = fun.AestralDosDeuses(matrizInicial)
+if solucao:
+    print("\nGarantido...", len(solucao), "movimentos e tá resolvido.")
+    for passo, estado in enumerate(solucao):
+        print("\nPasso", passo + 1)
+        print(estado)
+else:
+    print("\nMoio...achei foi nothing!")

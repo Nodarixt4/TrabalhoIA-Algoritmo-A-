@@ -1,25 +1,31 @@
 import numpy as np
 
-def gerarMatrizDesorganizada():
-    matrizAtual = np.random.permutation(9).reshape(3,3)
-    return matrizAtual
+#################################################################################################
+def gerarMatrizDesorganizada(seletor, matrizDeterminada):
+    if seletor == 1:
+        return np.random.permutation(9).reshape(3,3) #gerar a mtriz aleatória
+    if seletor == 2:
+        return np.array([[4, 1, 3],
+                        [0, 2, 5],
+                        [7, 8, 6]])
+    if seletor == 3:
+        return matrizDeterminada
+    else:
+        print("Opção inválida")
+        return 404
 
 def gerarMatrizObjetivo():
     return np.array([[1, 2, 3],
-                     [4, 5, 6], #meo deos, q formatação delicia
+                     [4, 5, 6],
                      [7, 8, 0]])
-
 #################################################################################################
-
 def encontrarCoordenada(matriz, numero):
     for x in range(3):
         for y in range(3):
             if matriz[x, y] == numero:
                 return x,y
     return -1
-
 #################################################################################################
-
 def manhattan(matrizAtual, matrizObjetivo):
     totalDiferenca = 0  
 
@@ -43,70 +49,50 @@ def manhattan(matrizAtual, matrizObjetivo):
 
     #print(f"Distância Manhattan Total: {totalDiferenca}")
     return totalDiferenca
-
 #################################################################################################
-
-def movimentosValidos(x, y, matriz):
+def movimentosValidos(x, y):
     movimentos = []
     
-    if x < 0 or x >= len(matriz) or y < 0 or y >= len(matriz[0]):
-        return movimentos
-    
-    if x > 0:
+    if x > 0: 
         movimentos.append((x - 1, y))
         #print("cima")
-    
-    if x < len(matriz) - 1:
-        movimentos.append((x + 1, y))  
+    if x < 2: 
+        movimentos.append((x + 1, y))
         #print("baixo")
-    
-    if y > 0:
-        movimentos.append((x, y - 1)) 
+    if y > 0: 
+        movimentos.append((x, y - 1))
         #print("esquerda")
-    
-    if y < len(matriz[0]) - 1:
-        movimentos.append((x, y + 1))  
+    if y < 2: 
+        movimentos.append((x, y + 1))
         #print("direita")
-    print("\n")
+    
     return movimentos
-
 #################################################################################################
-
 def moverZero(matriz, x, y, novo_x, novo_y):
-    """
-    Move o zero na matriz para a posição (novo_x, novo_y) e retorna uma nova matriz.
-    """
     novaMatriz = matriz.copy()
-    novaMatriz[x, y], novaMatriz[novo_x, novo_y] = novaMatriz[novo_x, novo_y], novaMatriz[x, y]
+    novaMatriz[x, y], novaMatriz[novo_x, novo_y] = novaMatriz[novo_x, novo_y], novaMatriz[x, y] #parte q o Vitor explicou
     return novaMatriz
-
 #################################################################################################
+def AestralDosDeuses(matrizInicial):
+    matrizObjetivo = gerarMatrizObjetivo()
+    fronteira = [(matrizInicial, 0, [])]  # Lista comum, sem heapq
+    visitados = []
 
-def buscarMelhorMovimento(matrizAtual, matrizObjetivo,escolha):
-    x, y = encontrarCoordenada(matrizAtual, 0)
-    movimentos = movimentosValidos(x, y, matrizAtual)
+    while fronteira:
+        fronteira.sort(key=lambda x: x[1] + manhattan(x[0], matrizObjetivo))  # Ordena manualmente
+        matriz, g, caminho = fronteira.pop(0)  # Pega o estado com menor custo
 
-    melhoresMovimentos = []
-    for (novo_x, novo_y) in movimentos:
-        novaMatriz = moverZero(matrizAtual, x, y, novo_x, novo_y)
-        custo = manhattan(novaMatriz, matrizObjetivo)
-        melhoresMovimentos.append((custo, novaMatriz))
+        if np.array_equal(matriz, matrizObjetivo):
+            return caminho
 
-    #tirada do GPT essa parte
-    # Escolhe o movimento com o menor custo (menor distância Manhattan)
-    melhoresMovimentos.sort(key=lambda x: x[0])  # Ordena por custo
-    melhorCusto, melhorMatriz = melhoresMovimentos[0]
+        x, y = encontrarCoordenada(matriz, 0)
+        for novo_x, novo_y in movimentosValidos(x, y):
+            novaMatriz = moverZero(matriz, x, y, novo_x, novo_y)
 
-    if escolha == 0:
-        return melhorMatriz
-    else:
-        return melhorCusto
+            if not any(np.array_equal(novaMatriz, estado[0]) for estado in visitados):
+                visitados.append((novaMatriz, g + 1))
+                novoCaminho = caminho + [novaMatriz]
+                fronteira.append((novaMatriz, g + 1, novoCaminho))
 
-#################################################################################################
-
-def irParaOmelhor(matrizAtual,matrizObjetivo):
-    matrizAtual = buscarMelhorMovimento(matrizAtual,matrizObjetivo,0)
-    return matrizAtual
-
-#################################################################################################
-
+    return None
+######################################## CAMPO DE TESTE #########################################

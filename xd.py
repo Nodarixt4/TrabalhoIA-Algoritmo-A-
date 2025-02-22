@@ -1,112 +1,33 @@
 import numpy as np
 
-########################################################################################
-movimentos = 0
+#################################################################################################
+def gerarMatrizDesorganizada():
+    matriz = np.random.permutation(9).reshape(3,3) #gerar a mtriz aleatória
+    return matriz
 
-matrizObjetivo = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-]
-matrizRandom = [
-    [1, 2, 3],
-    [4, 8, 6],
-    [7, 5, 9]
-]
-
-# Armazena os estados já visitados para evitar loops
-estados_visitados = set()
-
-
-def posicaoInicialDeAcordoComAposicaoDo9(matriz):
-    for a in range(len(matriz)): 
-        for b in range(len(matriz[a])):
-            if matriz[a][b] == 9:
-                return a, b
-    return None, None
-
-
-def melhor_movimento(matriz):
-    global movimentos, estados_visitados
-    x, y = posicaoInicialDeAcordoComAposicaoDo9(matriz)
-    movimentos_possiveis = movimentosValidos(x, y, matriz)
-
-    if not movimentos_possiveis:
-        return None
-
-    melhor_custo = float("inf")
-    melhor_mov = None
-
-    for mov_x, mov_y in movimentos_possiveis:
-        # Cria uma cópia da matriz e simula o movimento
-        matriz_simulada = [linha[:] for linha in matriz]
-        matriz_simulada[x][y], matriz_simulada[mov_x][mov_y] = matriz_simulada[mov_x][mov_y], matriz_simulada[x][y]
-
-        # Converte a matriz para um formato imutável (tupla) para armazenar no set
-        estado_atual = tuple(tuple(linha) for linha in matriz_simulada)
-        if estado_atual in estados_visitados:
-            continue  # Evita repetir estados
-
-        g = movimentos + 1  # Custo do caminho até aqui
-        h = manhattan(matriz_simulada)  # Estimativa de distância até a solução
-        f = g + h  # Função de avaliação A*
-
-        if f < melhor_custo:
-            melhor_custo = f
-            melhor_mov = (mov_x, mov_y)
-
-    return melhor_mov
-
-
-def mover_para_melhor(matriz):
-    global movimentos, estados_visitados
-    mov = melhor_movimento(matriz)
-
-    if mov:
-        x, y = posicaoInicialDeAcordoComAposicaoDo9(matriz)
-        matriz[x][y], matriz[mov[0]][mov[1]] = matriz[mov[0]][mov[1]], matriz[x][y]
-        
-        # Armazena o estado atual no conjunto de estados visitados
-        estado_atual = tuple(tuple(linha) for linha in matriz)
-        estados_visitados.add(estado_atual)
-
-        movimentos += 1
-        return matriz
-    return None
-
-
-def movimentosValidos(x, y, matriz):
-    movimentos = []
-    
-    if x > 0:
-        movimentos.append((x - 1, y))  
-    
-    if x < len(matriz) - 1:
-        movimentos.append((x + 1, y))  
-    
-    if y > 0:
-        movimentos.append((x, y - 1))  
-    
-    if y < len(matriz[0]) - 1:
-        movimentos.append((x, y + 1))  
-    
-    return movimentos
-
-
-def manhattan(matriz):
+def gerarMatrizObjetivo():
+    return np.array([[1, 2, 3],
+                     [4, 5, 6],
+                     [7, 8, 0]])
+#################################################################################################
+def encontrarCoordenada(matriz, numero):
+    for x in range(3):
+        for y in range(3):
+            if matriz[x, y] == numero:
+                return x,y
+    return -1
+#################################################################################################
+def manhattan(matrizAtual, matrizObjetivo):
     totalDiferenca = 0  
 
-    for numeroObservado in range(1, 10): 
-        posicaoX1, posicaoY1 = None, None 
-        posicaoX2, posicaoY2 = None, None
-        
-        for posicao1 in range(len(matriz)): 
-            for posicao2 in range(len(matriz[posicao1])):
-                if matriz[posicao1][posicao2] == numeroObservado:
-                    posicaoX1, posicaoY1 = posicao1, posicao2
+    #print("\nMatriz Atual:")
+    #print(matrizAtual)
+    #print("\nMatriz Objetivo:")
+    #print(matrizObjetivo)
 
-                if matrizObjetivo[posicao1][posicao2] == numeroObservado:
-                    posicaoX2, posicaoY2 = posicao1, posicao2
+    for numeroObservado in range(1, 9):  # Ignora o 0
+        posicaoX1, posicaoY1 = encontrarCoordenada(matrizAtual, numeroObservado)
+        posicaoX2, posicaoY2 = encontrarCoordenada(matrizObjetivo, numeroObservado)
 
         diferencaX = abs(posicaoX1 - posicaoX2)
         diferencaY = abs(posicaoY1 - posicaoY2)
@@ -114,28 +35,68 @@ def manhattan(matriz):
 
         totalDiferenca += diferencaDeEstados  
 
+        #print(f"Estado == {numeroObservado}")
+        #print(f"Diferença: {diferencaDeEstados}")
+
+    #print(f"Distância Manhattan Total: {totalDiferenca}")
     return totalDiferenca
+#################################################################################################
+def movimentosValidos(x, y):
+    movimentos = []
+    
+    if x > 0: 
+        movimentos.append((x - 1, y))
+        #print("cima")
+    if x < 2: 
+        movimentos.append((x + 1, y))
+        #print("baixo")
+    if y > 0: 
+        movimentos.append((x, y - 1))
+        #print("esquerda")
+    if y < 2: 
+        movimentos.append((x, y + 1))
+        #print("direita")
+    
+    return movimentos
+#################################################################################################
+def moverZero(matriz, x, y, novo_x, novo_y):
+    novaMatriz = matriz.copy()
+    novaMatriz[x, y], novaMatriz[novo_x, novo_y] = novaMatriz[novo_x, novo_y], novaMatriz[x, y] #parte q o Vitor explicou
+    return novaMatriz
+#################################################################################################
+def AestralDosDeuses(matrizInicial):
+    matrizObjetivo = gerarMatrizObjetivo()
+    fronteira = [(matrizInicial, 0, [])]  # Lista comum, sem heapq
+    visitados = []
 
+    while fronteira:
+        fronteira.sort(key=lambda x: x[1] + manhattan(x[0], matrizObjetivo))  # Ordena manualmente
+        matriz, g, caminho = fronteira.pop(0)  # Pega o estado com menor custo
 
-print("Estado Inicial:")
-for linha in matrizRandom:
-    print(linha)
-print("")
+        if np.array_equal(matriz, matrizObjetivo):
+            return caminho
 
-print("Resolução:")
+        x, y = encontrarCoordenada(matriz, 0)
+        for novo_x, novo_y in movimentosValidos(x, y):
+            novaMatriz = moverZero(matriz, x, y, novo_x, novo_y)
 
-jogadas = 0
+            if not any(np.array_equal(novaMatriz, estado[0]) for estado in visitados):
+                visitados.append((novaMatriz, g + 1))
+                novoCaminho = caminho + [novaMatriz]
+                fronteira.append((novaMatriz, g + 1, novoCaminho))
 
-while matrizRandom != matrizObjetivo:
-    nova_matriz = mover_para_melhor(matrizRandom)
-    if nova_matriz:
-        jogadas += 1
-        for linha in nova_matriz:
-            print(linha)
-        print("")
-    else:
-        print("Nenhum movimento possível!")
-        break
+    return None
+######################################## CAMPO DE TESTE #########################################
 
-# Exibe o número total de jogadas
-print(f"Total de jogadas: {jogadas}")
+matrizInicial = gerarMatrizDesorganizada()
+print("Matriz inicial:")
+print(matrizInicial)
+
+solucao = AestralDosDeuses(matrizInicial)
+if solucao:
+    print("\nSolução encontrada em", len(solucao), "movimentos!")
+    for passo, estado in enumerate(solucao):
+        print("\nPasso", passo + 1)
+        print(estado)
+else:
+    print("\nNenhuma solução encontrada!")

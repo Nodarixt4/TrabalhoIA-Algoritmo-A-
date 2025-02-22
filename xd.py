@@ -1,7 +1,4 @@
 import numpy as np
-from scipy.signal import convolve2d as conv2
-import matplotlib
-from queue import PriorityQueue
 
 ########################################################################################
 movimentos = 0
@@ -12,10 +9,13 @@ matrizObjetivo = [
     [7, 8, 9]
 ]
 matrizRandom = [
-    [1, 9, 3],
-    [4, 2, 6],
-    [7, 5, 8]
+    [1, 2, 3],
+    [4, 8, 6],
+    [7, 5, 9]
 ]
+
+# Armazena os estados já visitados para evitar loops
+estados_visitados = set()
 
 
 def posicaoInicialDeAcordoComAposicaoDo9(matriz):
@@ -25,32 +25,31 @@ def posicaoInicialDeAcordoComAposicaoDo9(matriz):
                 return a, b
     return None, None
 
-x, y = posicaoInicialDeAcordoComAposicaoDo9(matrizRandom)
-ultimo_movimento = None
-
 
 def melhor_movimento(matriz):
-    global ultimo_movimento
+    global movimentos, estados_visitados
     x, y = posicaoInicialDeAcordoComAposicaoDo9(matriz)
-    movimentos = movimentosValidos(x, y, matriz)
+    movimentos_possiveis = movimentosValidos(x, y, matriz)
 
-    # Filtra para evitar o movimento inverso
-    if ultimo_movimento in movimentos:
-        movimentos.remove(ultimo_movimento)
-
-    if not movimentos:
+    if not movimentos_possiveis:
         return None
 
     melhor_custo = float("inf")
     melhor_mov = None
 
-    for mov_x, mov_y in movimentos:
+    for mov_x, mov_y in movimentos_possiveis:
+        # Cria uma cópia da matriz e simula o movimento
         matriz_simulada = [linha[:] for linha in matriz]
         matriz_simulada[x][y], matriz_simulada[mov_x][mov_y] = matriz_simulada[mov_x][mov_y], matriz_simulada[x][y]
 
-        g = custoAteAqui()
-        h = manhattan(matriz_simulada)
-        f = g + h
+        # Converte a matriz para um formato imutável (tupla) para armazenar no set
+        estado_atual = tuple(tuple(linha) for linha in matriz_simulada)
+        if estado_atual in estados_visitados:
+            continue  # Evita repetir estados
+
+        g = movimentos + 1  # Custo do caminho até aqui
+        h = manhattan(matriz_simulada)  # Estimativa de distância até a solução
+        f = g + h  # Função de avaliação A*
 
         if f < melhor_custo:
             melhor_custo = f
@@ -58,22 +57,26 @@ def melhor_movimento(matriz):
 
     return melhor_mov
 
+
 def mover_para_melhor(matriz):
-    global ultimo_movimento
+    global movimentos, estados_visitados
     mov = melhor_movimento(matriz)
+
     if mov:
         x, y = posicaoInicialDeAcordoComAposicaoDo9(matriz)
         matriz[x][y], matriz[mov[0]][mov[1]] = matriz[mov[0]][mov[1]], matriz[x][y]
-        ultimo_movimento = (x, y)  # Atualiza a última posição do "9"
+        
+        # Armazena o estado atual no conjunto de estados visitados
+        estado_atual = tuple(tuple(linha) for linha in matriz)
+        estados_visitados.add(estado_atual)
+
+        movimentos += 1
         return matriz
     return None
 
 
 def movimentosValidos(x, y, matriz):
     movimentos = []
-    
-    if x < 0 or x >= len(matriz) or y < 0 or y >= len(matriz[0]):
-        return movimentos
     
     if x > 0:
         movimentos.append((x - 1, y))  
@@ -87,12 +90,6 @@ def movimentosValidos(x, y, matriz):
     if y < len(matriz[0]) - 1:
         movimentos.append((x, y + 1))  
     
-    return movimentos
-
-
-def custoAteAqui():
-    global movimentos
-    movimentos += 1
     return movimentos
 
 

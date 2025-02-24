@@ -23,3 +23,6 @@ if solucao:
         print(estado)
 else:
     print("\nMoio...achei foi nothing!")
+
+
+#Se demorar dms pra achar resultado, roda dnvkkkkkkk.  Ela ainda é muito mais "artificial" do  q "inteligente".

@@ -1,4 +1,5 @@
 import numpy as np
+import heapq
 
 #################################################################################################
 def gerarMatrizDesorganizada(seletor, matrizDeterminada):
@@ -75,24 +76,25 @@ def moverZero(matriz, x, y, novo_x, novo_y):
 #################################################################################################
 def AestralDosDeuses(matrizInicial):
     matrizObjetivo = gerarMatrizObjetivo()
-    fronteira = [(matrizInicial, 0, [])]  # Lista comum, sem heapq
-    visitados = []
-
+    fronteira = []
+    heapq.heappush(fronteira, (manhattan(matrizInicial, matrizObjetivo), 0, tuple(map(tuple, matrizInicial)), [])) #adiciona um novo elemento à fila de prioridade frontei
+    visitados = set() #com busca rápida e n permite duplicadas
+    
     while fronteira:
-        fronteira.sort(key=lambda x: x[1] + manhattan(x[0], matrizObjetivo))  # Ordena manualmente
-        matriz, g, caminho = fronteira.pop(0)  # Pega o estado com menor custo
-
+        _, g, matriz_tuple, caminho = heapq.heappop(fronteira)
+        matriz = np.array(matriz_tuple)
+        
         if np.array_equal(matriz, matrizObjetivo):
             return caminho
-
+        
         x, y = encontrarCoordenada(matriz, 0)
         for novo_x, novo_y in movimentosValidos(x, y):
             novaMatriz = moverZero(matriz, x, y, novo_x, novo_y)
-
-            if not any(np.array_equal(novaMatriz, estado[0]) for estado in visitados):
-                visitados.append((novaMatriz, g + 1))
+            novaMatrizTuple = tuple(map(tuple, novaMatriz))
+            
+            if novaMatrizTuple not in visitados:
+                visitados.add(novaMatrizTuple)
                 novoCaminho = caminho + [novaMatriz]
-                fronteira.append((novaMatriz, g + 1, novoCaminho))
-
-    return None
+                heapq.heappush(fronteira, (g + 1 + manhattan(novaMatriz, matrizObjetivo), g + 1, novaMatrizTuple, novoCaminho))
+    pass
 ######################################## CAMPO DE TESTE #########################################

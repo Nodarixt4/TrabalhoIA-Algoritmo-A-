@@ -113,6 +113,28 @@ def AestralDosDeuses(matrizInicial,seletor2):
                 heapq.heappush(fronteira, (g + 1 + manhattanOUhaming(novaMatriz, matrizObjetivo,seletor2), g + 1, novaMatrizTuple, novoCaminho))
     pass
 #################################################################################################
+def AestralDosDeusesSemFila(matrizInicial, seletor2):
+    matrizObjetivo = gerarMatrizObjetivo()
+    fronteira = [(matrizInicial, 0, [])]  # Lista comum - ordem de chegada
+    visitados = set()
+
+    while fronteira:
+        matriz, g, caminho = fronteira.pop(0)  #Remove o primeiro elemento (FIFO)
+        
+        if np.array_equal(matriz, matrizObjetivo):
+            return caminho
+
+        x, y = encontrarCoordenada(matriz, 0)
+        for novo_x, novo_y in movimentosValidos(x, y):
+            novaMatriz = moverZero(matriz, x, y, novo_x, novo_y)
+            novaMatrizTuple = tuple(map(tuple, novaMatriz))
+
+            if novaMatrizTuple not in visitados:
+                visitados.add(novaMatrizTuple)
+                novoCaminho = caminho + [novaMatriz]
+                fronteira.append((novaMatriz, g + 1, novoCaminho))  #Insere no final
+    pass
+#################################################################################################
 def ehresolvido(matriz):
     a=0
     """Verifica se um estado do jogo 8-puzzle é resolvível."""

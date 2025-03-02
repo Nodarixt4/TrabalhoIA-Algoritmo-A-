@@ -1,5 +1,6 @@
 import numpy as np
 import funcoes as fun
+import time
 
 ##########################################################################
 seletor1 = int(input("-1 Matriz inicial aleatória\n-2 Pré determinada \n-3 Escrever matriz \nResposta: "))
@@ -18,7 +19,12 @@ print(matrizInicial)
 a=fun.ehresolvido(matrizInicial)
 
 if a == 1:
+    start_time = time.time()
     solucao = fun.AestralDosDeuses(matrizInicial,seletor2)
+    end_time = time.time()
+    tempo_execucao = end_time - start_time
+    print(f"Tempo de execução: {tempo_execucao:.4f} segundos")
+
     if solucao:
         print("\nGarantido...", len(solucao), "movimentos e tá resolvido.")
         for passo, estado in enumerate(solucao):

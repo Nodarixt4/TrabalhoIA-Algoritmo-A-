@@ -94,7 +94,7 @@ def AestralDosDeuses(matrizInicial,seletor2):
     fronteira = []
     heapq.heappush(fronteira, (manhattanOUhaming(matrizInicial, matrizObjetivo,seletor2), 0, tuple(map(tuple, matrizInicial)), [])) #adiciona um novo elemento à fila de prioridade frontei
     visitados = set() #com busca rápida e n permite duplicadas
-    
+
     while fronteira:
         _, g, matriz_tuple, caminho = heapq.heappop(fronteira)
         matriz = np.array(matriz_tuple)
